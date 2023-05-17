@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
@@ -9,6 +8,7 @@ const Card = () => {
 
     return (
         // <TouchableOpacity onPress={handleCardPress}>
+        <View>
             <View style={styles.card}>
                 <Text style={styles.titulo}>Pesquisa</Text>
                 <Text style={styles.descricao}>Status:</Text>
@@ -16,6 +16,11 @@ const Card = () => {
                 <Text style={styles.prazo}>Prazo:</Text>
                 <Text style={styles.data}>99/99 até 99/99</Text>
             </View>
+            <View>
+                
+            </View>
+        </View>
+
     );
 };
 
