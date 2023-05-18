@@ -1,0 +1,21 @@
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Pesquisas from '../pages/Pesquisas';
+import PesquisaVerMais from '../pages/PesquisasVerMais';
+
+
+export default function Router() {
+
+  const Stack = createNativeStackNavigator();
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator >
+        <Stack.Screen name="Pesquisas" component={Pesquisas} options={{ headerShown: false }} />
+        <Stack.Screen name="PesquisaVerMais" component={PesquisaVerMais} options={{ headerShown: false }} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+

@@ -1,0 +1,50 @@
+[
+    {
+        "loja": "loja 01",
+        "prazo": "19/05/2024",
+        "tipo": "RX marca",
+        "produtos": [
+            {"nome": "Dipirona"},
+            {"nome": "Cha"},
+            {"nome": "Fralda"}
+           
+        ],
+        "id": 1
+    },
+    {
+        "loja": "loja 01",
+        "prazo": "19/05/2024",
+        "tipo": "OTC",
+        "produtos": [
+            {"nome": "Dipirona"},
+            {"nome": "Cha"},
+            {"nome": "Fralda"}
+           
+        ],
+        "id": 2
+    },
+    {
+        "loja": "loja 01",
+        "prazo": "19/05/2024",
+        "tipo": "RX marca",
+        "produtos": [
+            {"nome": "Dipirona"},
+            {"nome": "Cha"},
+            {"nome": "Fralda"}
+           
+        ],
+        "id": 3
+    },
+    {
+        "loja": "loja 01",
+        "prazo": "19/05/2024",
+        "tipo": "Infantil",
+        "produtos": [
+            {"nome": "Dipirona"},
+            {"nome": "Cha"},
+            {"nome": "Fralda"}
+           
+        ],
+        "id": 4
+    }
+]
