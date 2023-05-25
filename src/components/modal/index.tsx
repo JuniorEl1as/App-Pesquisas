@@ -5,6 +5,7 @@ import Modal from 'react-native-modal';
 import { SimpleLineIcons, AntDesign } from '@expo/vector-icons';
 import { AuthContext } from '../../context/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import {Switch} from 'react-native';
 
 export interface IResposta {
     id: string;
@@ -23,7 +24,7 @@ const ModalForm = ({ isVisible, onClose, }) => {
     const [precoRegularComparacao, setPrecoRegularComparacao] = useState<string>('')
     const [precoPgComparacao, setPrecoPgComparacao] = useState<string>('')
     const [precoPromocionalComparacao, setPrecoPromocionalComparacao] = useState<string>('')
-    const [checkboxproduto, setCheckboxProduto] = useState('unchecked')
+    const [produtoNãoEncontrado, setProdutoNaoEncontrado] = useState<boolean>()
 
     class FormularioResposta {
         id: string;
@@ -58,9 +59,9 @@ const ModalForm = ({ isVisible, onClose, }) => {
     }
 
     const handleConfirm = () => {
-        if (precoRegularComparacao.length < 2) {
+        if (precoRegularComparacao.length == 0) {
             createTwoButtonAlert("Campo vazio", "Informe o preço regular")
-        } else if (precoPgComparacao.length < 2 && precoPromocionalComparacao.length < 2) {
+        } else if (precoPgComparacao.length == 0 && precoPromocionalComparacao.length == 0) {
             createTwoButtonAlert("Campo vazio", "Informe o preço promocional ou pague e leve")
         } else if (lojaPesquisada.length == 0) {
             createTwoButtonAlert("Campo vazio", "Informe o nome da loja")
@@ -81,7 +82,7 @@ const ModalForm = ({ isVisible, onClose, }) => {
         Alert.alert(alerta, mensagem, [
             { text: 'OK' },
         ]
-        );
+    );
 
     function mudarPrecoRegular(value: string) {
         setPrecoRegularComparacao(value)
@@ -101,8 +102,11 @@ const ModalForm = ({ isVisible, onClose, }) => {
         setprecoPg(numero)
     }
 
-    function Checkboxproduto() {
-        setCheckboxProduto('checkd')
+    const Checkboxproduto = () => {
+        setProdutoNaoEncontrado(true)
+        if(produtoNãoEncontrado) {
+            setProdutoNaoEncontrado(false)
+        }
     }
 
     return (
@@ -115,18 +119,20 @@ const ModalForm = ({ isVisible, onClose, }) => {
                     label="Preço regular"
                     keyboardType='decimal-pad'
                     onChangeText={text => mudarPrecoRegular(text)} style={styles.campoTexto}
+                    disabled={produtoNãoEncontrado}
                 />
                 {produtoCategoria === "RX Marca" || produtoCategoria === "RX Genérico" ? <TextInput
                     label="Preço promocional"
                     keyboardType='numeric'
                     onChangeText={text => mudarPrecoPromocional(text)}
                     style={styles.campoTexto}
+                    disabled={produtoNãoEncontrado}
                 /> : <TextInput
                     label="Preço pague e leve"
                     keyboardType='decimal-pad'
-                    value={PrecoPg.toString()}
                     onChangeText={text => mudarPrecoPg(text)}
                     style={styles.campoTexto}
+                    disabled={produtoNãoEncontrado}
                 />}
                 <TextInput
                     label="Loja pesquisada"
@@ -134,7 +140,10 @@ const ModalForm = ({ isVisible, onClose, }) => {
                     style={styles.campoTexto}
                 />
                 <View style={styles.secaoCheckBox}>
-                   
+                    <Switch
+                       value={produtoNãoEncontrado}
+                       onValueChange={ Checkboxproduto}
+                    />
                     <Text>Produto não encontrado</Text>
                 </View>
                 <View style={styles.secaocamera}>

@@ -28,7 +28,7 @@ const AuthContextProvedor = ({ children }) => {
   const [dadosStorage, setDadosStorage] = useState([]);
   const [precoRegular, setPrecoRegular] = useState(0);
   const [PrecoPg, setprecoPg] = useState('');
-  const [PrecoPromocional, setPrecoPromocional] = useState('');
+  const [PrecoPromocional, setPrecoPromocional] = useState(0);
   const [lojaPesquisada, setLojaPesquisada] = useState('');
 
   useEffect(() => {

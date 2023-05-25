@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { View, StyleSheet, TouchableOpacity, Text, FlatList, ListRenderItemInfo } from 'react-native'
+import React, { useContext, useState } from 'react'
+import { View, StyleSheet, TouchableOpacity, Text, FlatList, ListRenderItemInfo, Alert } from 'react-native'
 import Header from '../../components/Header'
 import Card from '../../components/card-PesquisaVerMais'
 import Menu from '../../components/menuBottom'
@@ -8,7 +8,6 @@ import { AuthContext } from '../../context/auth'
 import { IProdutos } from '../../router'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { RouteProp } from '@react-navigation/native';
-import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import ModalFormHistorico from '../../components/historicoRepostaProdutos'
 
@@ -61,9 +60,11 @@ export default function PesquisaVerMais({ route }: ScreenProps2) {
     setPesquisaID(pesquisaId)
   }
 
-  function goHistorico () {
-    setVisibilidadeModalHistorico(true)
-  }
+  const createTwoButtonAlert = (alerta: string, mensagem: string) =>
+    Alert.alert(alerta, mensagem, [
+      { text: 'OK' },
+    ]
+    );
 
   function onClose() {
     setVisibilidadeModal(false)
@@ -75,7 +76,7 @@ export default function PesquisaVerMais({ route }: ScreenProps2) {
 
   function EnviarResposta(idPesquisa: string, codigoLoja: string, formularioCategoria: string) {
 
-    const dadosRespostas: [] = dadosStorage.filter( (resposta: IResposta) => resposta.pesquisaId == idPesquisa)
+    const dadosRespostas: [] = dadosStorage.filter((resposta: IResposta) => resposta.pesquisaId == idPesquisa)
     console.log(dadosRespostas)
 
     const data: IRespostaPesquisa = {
@@ -98,12 +99,13 @@ export default function PesquisaVerMais({ route }: ScreenProps2) {
       .then(response => response.text())
       .then(data => {
         console.log('Resposta do servidor:', data);
+       
       })
       .catch(error => {
         console.error('Erro na solicitação:', error);
+       
       }
-    );
-
+      );
   }
 
   return (

@@ -23,13 +23,6 @@ export default function Pesquisas({ navigation }: ScreenProps) {
     const { pesquisaLoja, selectedValue, setSelectedValue, setPesquisaLoja }: any = useContext(AuthContext);
     const { pesquisaLojaFilter, setPesquisaLojaFilter, myLoja }: any = useContext(AuthContext);
 
-    const dataAtual = new Date();
-    const dia = dataAtual.getDate();
-    const mes = dataAtual.getMonth() + 1;
-    const ano = dataAtual.getFullYear();
-    // const dataFormatada = `20/05/2023`;
-    const dataFormatada = `${dia}/${mes}/${ano}`;
-
     function FiltrandoPesquisas(value: string) {
         setSelectedValue(value)
         if (value != "Todas") {
@@ -41,15 +34,11 @@ export default function Pesquisas({ navigation }: ScreenProps) {
             setPesquisaLojaFilter(pesquisaLoja)
             console.log(pesquisaLojaFilter)
         }
-
     }
 
     const CardPesquisas = ({ item }) => {
-
-
-
         return (
-            <TouchableOpacity onPress={() => navigation.navigate("PesquisaVerMais", {produtos: item.produtos, prazo: item.dateFin, id: item.id, pesquisaId: item.id })}>
+            <TouchableOpacity onPress={() => navigation.navigate("PesquisaVerMais", { produtos: item.produtos, prazo: item.dateFin, id: item.id, pesquisaId: item.id })}>
                 <View style={styles.container}>
                     <View style={styles.card}>
                         <View>
