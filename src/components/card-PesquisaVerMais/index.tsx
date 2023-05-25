@@ -1,13 +1,18 @@
-import React from 'react';
+import moment from 'moment';
+import React, { useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { AuthContext } from '../../context/auth';
 
-const Card = () => {
+const Card = ({ item }) => {
+
+    const { myLoja}: any = useContext(AuthContext);
+
     return (
         <View style={styles.container}>
             <View style={styles.card}>
-                <Text style={styles.texto}>Status :</Text>
-                <Text style={styles.texto}>Loja :</Text>
-                <Text style={styles.texto}>Prazo :</Text>
+                <Text style={styles.texto}>Status : </Text>
+                <Text style={styles.texto}>Loja : {myLoja.nomeFilial}</Text>
+                <Text style={styles.texto}>Prazo : {moment(item).format('DD/MM/YYYY')}</Text>
             </View>
             <View>
             </View>
@@ -16,10 +21,9 @@ const Card = () => {
 };
 
 const styles = StyleSheet.create({
-    container : {
+    container: {
         position: 'absolute',
-        top: 90,
-        
+        top: 60,
     },
     card: {
         backgroundColor: '#ffffff',
@@ -33,7 +37,7 @@ const styles = StyleSheet.create({
     texto: {
         fontSize: 19,
     },
-    }
+}
 );
 
 export default Card;

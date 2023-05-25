@@ -1,34 +1,34 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 const Menu = () => {
     return (
         <View style={styles.container}>
 
-            <View style={styles.icones}>
+            <TouchableOpacity style={styles.icones}>
                 <Image source={require('../Icons/home-black.png')} />
                 <Text>Início</Text>
-            </View>
+            </TouchableOpacity>
 
-            <View style={styles.icones}>
+            <TouchableOpacity style={styles.icones}>
                 <Image source={require('../Icons/vendas.png')} />
                 <Text>Vendas</Text>
-            </View>
+            </TouchableOpacity>
 
-            <View style={styles.icones}>
+            <TouchableOpacity style={styles.icones}>
                 <Image source={require('../Icons/dicas.png')} />
                 <Text>Dicas</Text>
-            </View>
+            </TouchableOpacity>
 
-            <View style={styles.icones}>
+            <TouchableOpacity style={styles.icones}>
                 <Image source={require('../Icons/satisfacao.png')} />
                 <Text>Satisfação</Text>
-            </View>
+            </TouchableOpacity>
 
-            <View style={styles.icones}>
+            <TouchableOpacity style={styles.icones}>
                 <Image source={require('../Icons/menu.png')} />
                 <Text>Menu</Text>
-            </View>
+            </TouchableOpacity>
 
         </View>
     );
@@ -41,16 +41,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         backgroundColor: 'white',
         padding: 16,
-        width: 350,
-        height: 100,
-        left: 15,
-        top: 150,
+        width: '100%',
+        height: 80,
+        top: 690,
         justifyContent: 'space-between',
         flexDirection: 'row',
         textAlign: 'center',
         borderWidth: 1,
-        borderColor: 'rgba(0, 0, 0, 0.2)', // Cor da borda semitransparente
-        borderRadius: 8, // Raio de curvatura da borda
+        borderColor: 'rgba(0, 0, 0, 0.2)',
     },
     icones: {
         position: 'relative',
