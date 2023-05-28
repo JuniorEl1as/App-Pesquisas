@@ -1,10 +1,10 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { FlatList, SafeAreaView, StyleSheet, StatusBar, Text, TouchableOpacity, View, ScrollView } from 'react-native'
 import Header from '../../components/Header'
 import { Picker } from '@react-native-picker/picker';
-import { AuthContext } from '../../context/auth';
+import { AuthContext, IRespostaPesquisa } from '../../context/auth';
 import Menu from '../../components/menuBottom';
-import { IProdutos } from '../../router';
+import { IPesquisa, IProdutos } from '../../router';
 import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 
@@ -20,8 +20,9 @@ export type ScreenProps = {
 }
 
 export default function Pesquisas({ navigation }: ScreenProps) {
-    const { pesquisaLoja, selectedValue, setSelectedValue, setPesquisaLoja }: any = useContext(AuthContext);
-    const { pesquisaLojaFilter, setPesquisaLojaFilter, myLoja }: any = useContext(AuthContext);
+    const { pesquisaLoja, selectedValue, setSelectedValue, respostasPesquisas }: any = useContext(AuthContext);
+    const { pesquisaLojaFilter, setPesquisaLojaFilter, myLoja, status, setStatus }: any = useContext(AuthContext);
+
 
     function FiltrandoPesquisas(value: string) {
         setSelectedValue(value)
@@ -36,16 +37,30 @@ export default function Pesquisas({ navigation }: ScreenProps) {
         }
     }
 
+    const idRespostasTrue = respostasPesquisas.map((resposta: IRespostaPesquisa) => resposta.pequisaId)
+
+    function abrirVerMais(produtos : [], prazo: string, id: string, pesquisaId: string) {
+        navigation.navigate("PesquisaVerMais", { produtos, prazo, id, pesquisaId })
+    }
+
+
     const CardPesquisas = ({ item }) => {
         return (
-            <TouchableOpacity onPress={() => navigation.navigate("PesquisaVerMais", { produtos: item.produtos, prazo: item.dateFin, id: item.id, pesquisaId: item.id })}>
+            <TouchableOpacity onPress={() => abrirVerMais(item.produtos, item.dateFin, item.id, item.id)}>
                 <View style={styles.container}>
                     <View style={styles.card}>
                         <View>
                             <Text style={styles.pesquisa}>Pesquisa aberta</Text>
                             <Text style={styles.texto}>Prazo : {moment(item.dateFin).format('DD/MM/YYYY')}</Text>
                             <Text style={styles.texto}>Quantidade de produtos : {item.produtos.length}</Text>
-                            <Text style={styles.texto}>Status : </Text>
+
+                            {idRespostasTrue.includes(item.id) === true ?
+                                <Text style={styles.texto}>Status : <Text style={{ color: "green" }}>Conluida</Text></Text>
+                                :
+                                status === true ? <Text style={styles.texto}>Status : <Text style={{ color: "red" }}>Em andamento</Text></Text> :
+                                <Text style={styles.texto}>Status : <Text style={{ color: "red" }}>Nova</Text></Text>
+                            }
+
                             <Text style={styles.texto}>Categoria : {item.categoria}</Text>
                         </View>
                         <View>
@@ -75,8 +90,8 @@ export default function Pesquisas({ navigation }: ScreenProps) {
                     </Picker>
                     <FlatList style={{ height: 500, marginBottom: 10 }}
                         data={pesquisaLojaFilter}
-                        renderItem={CardPesquisas}
                         keyExtractor={pesquisaLojaFilter => pesquisaLojaFilter.id}
+                        renderItem={CardPesquisas}
                     />
                 </View>
                 <Text style={styles.myLoja}>Pesquisas da loja {myLoja.nomeFilial} </Text>

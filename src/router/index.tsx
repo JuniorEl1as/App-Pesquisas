@@ -24,6 +24,16 @@ export interface IPesquisaID {
   idPesquisa: string
 }
 
+export interface IPesquisa {
+  id: string,
+  lojas: number,
+  dateIni: string,
+  dateFin: string,
+  categoria: string,
+  produtos: [],
+  respostas: [],
+}
+
 export default function Router() {
 
   const Stack = createStackNavigator<StackParams>();

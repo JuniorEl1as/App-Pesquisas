@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { View, StyleSheet, TouchableOpacity, Text, FlatList, ListRenderItemInfo, Alert } from 'react-native'
 import Header from '../../components/Header'
 import Card from '../../components/card-PesquisaVerMais'
@@ -10,6 +10,7 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import { RouteProp } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import ModalFormHistorico from '../../components/historicoRepostaProdutos'
+import { MaterialIcons } from '@expo/vector-icons';
 
 type StackParams = {
   Pesquisas: undefined,
@@ -20,10 +21,6 @@ interface produtos {
   id: string;
   nome: string;
   categoria: string;
-}
-
-interface prazo {
-  dateFin: string;
 }
 
 type NavigationProps2 = StackNavigationProp<StackParams, "PesquisaVerMais">
@@ -44,13 +41,12 @@ interface IRespostaPesquisa {
 }
 
 export default function PesquisaVerMais({ route }: ScreenProps2) {
-  const { produtos, prazo, pesquisaId } = route.params
-  const { visibilidadeModal, setVisibilidadeModal }: any = useContext(AuthContext);
-  const { visibilidadeModalHistorico, setVisibilidadeModalHistorico }: any = useContext(AuthContext);
+  const { produtos, prazo, pesquisaId, id } = route.params
+  const { visibilidadeModal, setVisibilidadeModal, setProdutoIdparaHistorico }: any = useContext(AuthContext);
   const { setNomeProduto, setPesquisaID, pesquisaID, produtoCategoria }: any = useContext(AuthContext);
   const { setProdutoID, setProdutoCategoria, dadosStorage }: any = useContext(AuthContext);
-  const url = 'https://pmenosapi-production-efe6.up.railway.app/Pesquisa/Resposta';
-
+  const { VisivilidadeHistorico, setVisivilidadeHistorico } = useContext(AuthContext);
+  const url = 'https://pmenosapi-production-efe6.up.railway.app/Agile/Cadastrar/Resposta';
 
   function PegarIDNome(nome: string, id: string, categoria: string, pesquisaId: string) {
     setVisibilidadeModal(true)
@@ -60,25 +56,21 @@ export default function PesquisaVerMais({ route }: ScreenProps2) {
     setPesquisaID(pesquisaId)
   }
 
-  const createTwoButtonAlert = (alerta: string, mensagem: string) =>
+  const alertaNaTela = (alerta: string, mensagem: string) =>
     Alert.alert(alerta, mensagem, [
       { text: 'OK' },
     ]
-    );
+    );  
 
   function onClose() {
     setVisibilidadeModal(false)
   }
 
-  function onCloseHistorico() {
-    setVisibilidadeModalHistorico(false)
-  }
-
   function EnviarResposta(idPesquisa: string, codigoLoja: string, formularioCategoria: string) {
 
     const dadosRespostas: [] = dadosStorage.filter((resposta: IResposta) => resposta.pesquisaId == idPesquisa)
-    console.log(dadosRespostas)
-
+    console.log(dadosRespostas);
+    
     const data: IRespostaPesquisa = {
       codigoLoja: codigoLoja,
       formularioCategoria: formularioCategoria,
@@ -87,25 +79,37 @@ export default function PesquisaVerMais({ route }: ScreenProps2) {
       pequisaId: idPesquisa,
     }
 
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    };
+    if (data.formularioRespostas.length == 0) {
+      alertaNaTela("Aviso", "Responda pelo menos um produto")
+    } else {
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      };
 
-    fetch(url, options)
-      .then(response => response.text())
-      .then(data => {
-        console.log('Resposta do servidor:', data);
-       
-      })
-      .catch(error => {
-        console.error('Erro na solicitação:', error);
-       
-      }
-      );
+      fetch(url, options)
+        .then(response => response.text())
+        .then(data => {
+          console.log('Resposta do servidor:', data);
+          alertaNaTela("Aviso", data)
+        })
+        .catch(error => {
+          console.error('Erro na solicitação:', error);
+
+        }
+        );
+
+    }
+
+
+  }
+
+  function CapturarIdResposta(id: string) {
+    setVisivilidadeHistorico(true)
+    setProdutoIdparaHistorico(id)
   }
 
   return (
@@ -118,7 +122,6 @@ export default function PesquisaVerMais({ route }: ScreenProps2) {
           renderItem={(item: ListRenderItemInfo<produtos>) => {
             return (
               <View style={styles.container2}>
-
                 <View style={{ height: 45, paddingLeft: 10 }}>
                   <Text style={styles.nomeProduto}>{item.item.nome}</Text>
                 </View>
@@ -130,14 +133,18 @@ export default function PesquisaVerMais({ route }: ScreenProps2) {
                     </TouchableOpacity>
                   </View>
                   <View >
+                    <TouchableOpacity onPress={() => CapturarIdResposta(item.item.id)}>
+                      <MaterialIcons name="history" size={40} color="#0054A6" />
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>
             )
           }}
         />
+        <ModalFormHistorico isVisibleHistorico={VisivilidadeHistorico} pesquisaId={pesquisaId} />
+
         <ModalForm isVisible={visibilidadeModal} onClose={onClose} />
-        <ModalFormHistorico isVisibleHistorico={visibilidadeModalHistorico} onCloseHistorico={onCloseHistorico} />
         <TouchableOpacity style={styles.button} onPress={() => EnviarResposta(pesquisaID, "3", produtoCategoria)}>
           <Text style={styles.buttonText}>Concluir pesquisa</Text>
         </TouchableOpacity>

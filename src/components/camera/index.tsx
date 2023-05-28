@@ -1,128 +1,64 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
-import { Camera } from 'expo-camera';
-import { CameraType } from 'expo-camera';
+import { Camera, CameraType } from 'expo-camera';
+import { useContext, useRef, useState } from 'react';
+import { Text, TouchableOpacity, View, StyleSheet, Image } from 'react-native';
+import Modal from 'react-native-modal';
+import { AuthContext } from '../../context/auth';
+import { SimpleLineIcons, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 
-export default function App() {
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [cameraOpen, setCameraOpen] = useState(false);
-  const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
-  const [cameraType, setCameraType] = useState(CameraType.back);
-  const cameraRef = useRef<Camera | null>(null);
+export default function Cameraprodutos() {
+    const { modalCamera, setmodalCamera }: any = useContext(AuthContext);
+    const [tipo, setTipo] = useState(CameraType.back);
+    const [permission, requestPermission] = Camera.useCameraPermissions();
+    const [capturedPhoto, setCapturedPhoto] = useState(null);
+    const cameraRef = useRef(null);
 
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
-    })();
-  }, []);
-
-  const handleOpenCamera = async () => {
-    if (hasPermission) {
-      setCameraOpen(true);
-    } else {
-      Alert.alert('Sem acesso à câmera');
+    function mudartipoCamera() {
+        setTipo(current => (current === CameraType.back ? CameraType.front : CameraType.back));
     }
-  };
 
-  const handleCameraType = () => {
-    setCameraType((prevCameraType) =>
-      prevCameraType === CameraType.back ? CameraType.front : CameraType.back
-    );
-  };
-
-  const handleCapture = async () => {
-    if (cameraRef.current) {
-      const photo = await cameraRef.current.takePictureAsync();
-      setCapturedPhoto(photo.uri);
-      setCameraOpen(false);
+    const FecharCamera = () => {
+        setmodalCamera(false);
     }
-  };
 
-  const handleConfirm = () => {
-    // Lógica para salvar a imagem capturada
-    setCapturedPhoto(null);
-  };
-
-  const handleCancel = () => {
-    setCapturedPhoto(null);
-  };
-
-  if (hasPermission === null) {
-    return <View />;
-  }
-  if (hasPermission === false) {
-    return <Text>Sem acesso à câmera</Text>;
-  }
-
-  if (cameraOpen) {
     return (
-      <View style={{ flex: 1 }}>
-        <Camera
-          style={{ flex: 1 }}
-          type={cameraType}
-          ref={(ref) => (cameraRef.current = ref)}
-        >
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: 'transparent',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              padding: 16,
-            }}
-          >
-            <TouchableOpacity
-              style={{ alignSelf: 'flex-end', alignItems: 'center' }}
-              onPress={handleCameraType}
+        <Modal isVisible={modalCamera} style={{ width: 400, height: "100%", marginLeft: 0, marginBottom: 0, marginRight: 0}}>
+            <Camera
+                style={{ height: "100%", width: "95%" }}
+                type={tipo}
+                ref={cameraRef}
             >
-              <Text style={{ fontSize: 18, color: 'white' }}>Virar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ alignSelf: 'flex-end', alignItems: 'center' }}
-              onPress={handleCapture}
-            >
-              <Text style={{ fontSize: 18, color: 'white' }}>Capturar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ alignSelf: 'flex-end', alignItems: 'center' }}
-              onPress={() => setCameraOpen(false)}
-            >
-              <Text style={{ fontSize: 18, color: 'white' }}>Voltar</Text>
-            </TouchableOpacity>
-          </View>
-        </Camera>
-      </View>
-    );
-  }
+                <View
+                    style={{
+                        flex: 1,
+                        backgroundColor: 'transparent',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        padding: 16,
+                    }}
+                >
+                    <TouchableOpacity style={{ alignSelf: 'flex-end', alignItems: 'center' }} onPress={() => mudartipoCamera()}>
+                        <MaterialCommunityIcons name="camera-flip-outline" size={30} color="white" />
+                    </TouchableOpacity>
 
-  if (capturedPhoto) {
-    return (
-      <View style={{ flex: 1 }}>
-        <Image source={{ uri: capturedPhoto }} style={{ flex: 1 }} />
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            padding: 16,
-          }}
-        >
-          <TouchableOpacity onPress={handleConfirm} style={{ marginRight: 16 }}>
-            <Text style={{ fontSize: 18, color: 'blue' }}>Confirmar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleCancel}>
-            <Text style={{ fontSize: 18, color: 'red' }}>Cancelar</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
+                    <TouchableOpacity style={{ alignSelf: 'flex-end', alignItems: 'center' }}>
+                        <SimpleLineIcons name="camera" size={30} style={styles.camera} />
+                    </TouchableOpacity>
 
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <TouchableOpacity onPress={handleOpenCamera} style={{ padding: 50 }}>
-        <Text style={{ fontSize: 18 }}>Abrir Câmera</Text>
-      </TouchableOpacity>
-    </View>
-  );
+                    <TouchableOpacity style={{ alignSelf: 'flex-end', alignItems: 'center' }} onPress={FecharCamera}>
+                        <AntDesign name="closecircleo" size={30} color="white" />
+                    </TouchableOpacity>
+                    {capturedPhoto && <Image source={{ uri: capturedPhoto }} style={{ width: 200, height: 200 }} />}
+                </View>
+            </Camera>
+        </Modal>
+    );
 }
+
+const styles = StyleSheet.create({
+    camera: {
+        color: "white",
+        marginTop: 15,
+        marginLeft: 5,
+        marginRight: 15
+    },
+})
