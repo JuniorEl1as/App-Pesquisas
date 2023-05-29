@@ -23,27 +23,28 @@ export interface IRespostaPesquisa {
 const AuthContextProvedor = ({ children }) => {
   const [visibilidadeModal, setVisibilidadeModal] = useState<Boolean>()
   const [visibilidadeModalHistorico, setVisibilidadeModalHistorico] = useState<Boolean>()
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState<number>(0);
   const [pesquisas, setPesquisas] = useState([])
-  const [dateFin, setDateFin] = useState('')
+  const [dateFin, setDateFin] = useState<string>('')
   const [pesquisaLoja, setPesquisaLoja] = useState([]);
   const [pesquisaLojaFilter, setPesquisaLojaFilter] = useState([]);
-  const [selectedValue, setSelectedValue] = useState('');
-  const [nomeProduto, setNomeProduto] = useState('');
-  const [produtoID, setProdutoID] = useState('');
-  const [produtoCategoria, setProdutoCategoria] = useState('');
-  const [pesquisaID, setPesquisaID] = useState('');
+  const [selectedValue, setSelectedValue] = useState<string>('');
+  const [nomeProduto, setNomeProduto] = useState<string>('');
+  const [produtoID, setProdutoID] = useState<string>('');
+  const [produtoCategoria, setProdutoCategoria] = useState<string>('');
+  const [pesquisaID, setPesquisaID] = useState<string>('');
   const [respostaForm, setrespostaForm] = useState([]);
   const [dadosStorage, setDadosStorage] = useState([]);
   const [precoRegular, setPrecoRegular] = useState(0);
   const [PrecoPg, setprecoPg] = useState(0);
-  const [PrecoPromocional, setPrecoPromocional] = useState(0);
-  const [lojaPesquisada, setLojaPesquisada] = useState('');
+  const [PrecoPromocional, setPrecoPromocional] = useState<number>(0);
+  const [lojaPesquisada, setLojaPesquisada] = useState<string>('');
   const [modalCamera, setmodalCamera] = useState<boolean>();
   const [status, setStatus] = useState<boolean>();
   const [VisivilidadeHistorico, setVisivilidadeHistorico] = useState<boolean>();
   const [ProdutoIdparaHistorico, setProdutoIdparaHistorico] = useState<string>();
   const [respostasPesquisas, setrespostasPesquisas] = useState<[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,7 +62,7 @@ const AuthContextProvedor = ({ children }) => {
 
     fetchData();
   }, [count])
-
+ 
   const myLoja = {
     codigo: 3,
     codigoDeposito: 1,
@@ -82,6 +83,7 @@ const AuthContextProvedor = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
+        loading,
         respostasPesquisas,
         setrespostasPesquisas,
         ProdutoIdparaHistorico,

@@ -80,7 +80,6 @@ const ModalFormHistorico = ({ isVisibleHistorico, pesquisaId }) => {
                     />
                 </View>
             </View>
-
         </Modal>
     );
 };

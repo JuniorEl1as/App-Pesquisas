@@ -1,29 +1,29 @@
-import React, { useContext } from 'react'
-import { FlatList, SafeAreaView, StyleSheet, StatusBar, Text, TouchableOpacity, View, ScrollView } from 'react-native'
-import Header from '../../components/Header'
+import React, { useContext } from 'react';
+import { SafeAreaView, StyleSheet, StatusBar, Text, View, ScrollView } from 'react-native';
+import Header from '../../components/Header';
 import { Picker } from '@react-native-picker/picker';
-import { AuthContext, IRespostaPesquisa } from '../../context/auth';
+import { AuthContext } from '../../context/auth';
 import Menu from '../../components/menuBottom';
 import { IPesquisa, IProdutos } from '../../router';
 import { StackNavigationProp } from '@react-navigation/stack';
-import moment from 'moment';
+import { CardPesquisas } from '../../components/cardPesquisas';
 
 type StackParams = {
     Pesquisas: undefined,
-    PesquisaVerMais: IProdutos
+    PesquisaVerMais: IProdutos,
 }
 
 type NavigationProps = StackNavigationProp<StackParams, "Pesquisas">
 
 export type ScreenProps = {
-    navigation: NavigationProps
+    navigation: NavigationProps,
+    render: IPesquisa,
 }
 
 export default function Pesquisas({ navigation }: ScreenProps) {
-    const { pesquisaLoja, selectedValue, setSelectedValue, respostasPesquisas }: any = useContext(AuthContext);
-    const { pesquisaLojaFilter, setPesquisaLojaFilter, myLoja, status, setStatus }: any = useContext(AuthContext);
-
-
+    const { pesquisaLoja, selectedValue, setSelectedValue }: any = useContext(AuthContext);
+    const { pesquisaLojaFilter, setPesquisaLojaFilter, myLoja }: any = useContext(AuthContext);
+   
     function FiltrandoPesquisas(value: string) {
         setSelectedValue(value)
         if (value != "Todas") {
@@ -35,41 +35,6 @@ export default function Pesquisas({ navigation }: ScreenProps) {
             setPesquisaLojaFilter(pesquisaLoja)
             console.log(pesquisaLojaFilter)
         }
-    }
-
-    const idRespostasTrue = respostasPesquisas.map((resposta: IRespostaPesquisa) => resposta.pequisaId)
-
-    function abrirVerMais(produtos : [], prazo: string, id: string, pesquisaId: string) {
-        navigation.navigate("PesquisaVerMais", { produtos, prazo, id, pesquisaId })
-    }
-
-
-    const CardPesquisas = ({ item }) => {
-        return (
-            <TouchableOpacity onPress={() => abrirVerMais(item.produtos, item.dateFin, item.id, item.id)}>
-                <View style={styles.container}>
-                    <View style={styles.card}>
-                        <View>
-                            <Text style={styles.pesquisa}>Pesquisa aberta</Text>
-                            <Text style={styles.texto}>Prazo : {moment(item.dateFin).format('DD/MM/YYYY')}</Text>
-                            <Text style={styles.texto}>Quantidade de produtos : {item.produtos.length}</Text>
-
-                            {idRespostasTrue.includes(item.id) === true ?
-                                <Text style={styles.texto}>Status : <Text style={{ color: "green" }}>Conluida</Text></Text>
-                                :
-                                status === true ? <Text style={styles.texto}>Status : <Text style={{ color: "red" }}>Em andamento</Text></Text> :
-                                <Text style={styles.texto}>Status : <Text style={{ color: "red" }}>Nova</Text></Text>
-                            }
-
-                            <Text style={styles.texto}>Categoria : {item.categoria}</Text>
-                        </View>
-                        <View>
-                            <Text style={styles.texto}></Text>
-                        </View>
-                    </View>
-                </View>
-            </TouchableOpacity>
-        )
     }
 
     return (
@@ -88,11 +53,15 @@ export default function Pesquisas({ navigation }: ScreenProps) {
                         <Picker.Item key={3} label="OTC" value="OTC" />
                         <Picker.Item key={4} label="Marca Própria" value="Marca Própria" />
                     </Picker>
-                    <FlatList style={{ height: 500, marginBottom: 10 }}
-                        data={pesquisaLojaFilter}
-                        keyExtractor={pesquisaLojaFilter => pesquisaLojaFilter.id}
-                        renderItem={CardPesquisas}
-                    />
+                    <ScrollView style={{maxHeight: 500, height: 500}}>
+
+                        {
+                            pesquisaLojaFilter.map( (pesquisa : IPesquisa ) => {
+                                return <CardPesquisas key={pesquisa.id} navigation={navigation} render={pesquisa}/>
+                            })
+                        }
+
+                    </ScrollView> 
                 </View>
                 <Text style={styles.myLoja}>Pesquisas da loja {myLoja.nomeFilial} </Text>
                 <Menu />
@@ -130,6 +99,6 @@ const styles = StyleSheet.create({
         bottom: 0
     },
     myLoja: {
-        marginLeft: '15%'
+        marginLeft: '15%',
     }
 })

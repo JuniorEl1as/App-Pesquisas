@@ -1,11 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const Menu = () => {
+
+    const navigation = useNavigation();
+
     return (
         <View style={styles.container}>
 
-            <TouchableOpacity style={styles.icones}>
+            <TouchableOpacity style={styles.icones} onPress={() => navigation.goBack()}>
                 <Image source={require('../Icons/home-black.png')} />
                 <Text>Início</Text>
             </TouchableOpacity>

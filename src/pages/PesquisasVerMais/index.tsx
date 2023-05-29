@@ -1,15 +1,15 @@
-import React, { useContext } from 'react'
-import { View, StyleSheet, TouchableOpacity, Text, FlatList, ListRenderItemInfo, Alert } from 'react-native'
-import Header from '../../components/Header'
-import Card from '../../components/card-PesquisaVerMais'
+import React, { useContext } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text, FlatList, ListRenderItemInfo, Alert } from 'react-native';
+import Header from '../../components/Header';
+import Card from '../../components/card-PesquisaVerMais';
 import Menu from '../../components/menuBottom'
-import ModalForm, { IResposta } from '../../components/modal'
-import { AuthContext } from '../../context/auth'
-import { IProdutos } from '../../router'
-import { StackNavigationProp } from '@react-navigation/stack'
+import ModalForm, { IResposta } from '../../components/modal';
+import { AuthContext } from '../../context/auth';
+import { IProdutos } from '../../router';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import ModalFormHistorico from '../../components/historicoRepostaProdutos'
+import ModalFormHistorico from '../../components/historicoRepostaProdutos';
 import { MaterialIcons } from '@expo/vector-icons';
 
 type StackParams = {
@@ -28,8 +28,9 @@ type NavigationProps2 = StackNavigationProp<StackParams, "PesquisaVerMais">
 type RouteProps = RouteProp<StackParams, "PesquisaVerMais">
 
 type ScreenProps2 = {
-  navigation: NavigationProps2
-  route: RouteProps
+  navigation: NavigationProps2,
+  route: RouteProps,
+  status: boolean,
 }
 
 interface IRespostaPesquisa {
@@ -41,7 +42,7 @@ interface IRespostaPesquisa {
 }
 
 export default function PesquisaVerMais({ route }: ScreenProps2) {
-  const { produtos, prazo, pesquisaId, id } = route.params
+  const { produtos, prazo, pesquisaId, id, status } = route.params
   const { visibilidadeModal, setVisibilidadeModal, setProdutoIdparaHistorico }: any = useContext(AuthContext);
   const { setNomeProduto, setPesquisaID, pesquisaID, produtoCategoria }: any = useContext(AuthContext);
   const { setProdutoID, setProdutoCategoria, dadosStorage }: any = useContext(AuthContext);
@@ -60,7 +61,7 @@ export default function PesquisaVerMais({ route }: ScreenProps2) {
     Alert.alert(alerta, mensagem, [
       { text: 'OK' },
     ]
-    );  
+    );
 
   function onClose() {
     setVisibilidadeModal(false)
@@ -68,43 +69,49 @@ export default function PesquisaVerMais({ route }: ScreenProps2) {
 
   function EnviarResposta(idPesquisa: string, codigoLoja: string, formularioCategoria: string) {
 
-    const dadosRespostas: [] = dadosStorage.filter((resposta: IResposta) => resposta.pesquisaId == idPesquisa)
-    console.log(dadosRespostas);
-    
-    const data: IRespostaPesquisa = {
-      codigoLoja: codigoLoja,
-      formularioCategoria: formularioCategoria,
-      formularioRespondido: true,
-      formularioRespostas: dadosRespostas,
-      pequisaId: idPesquisa,
-    }
+    Alert.alert('Deseja concluir a pesquisa?', 'Ao concluir uma pesquisa você não poderá respondê-la novamente!', [
+      {
+        text: 'Cancelar',
+        style: 'cancel',
+      },
+      {
+        text: 'Confirmar', onPress: () => {
+          const dadosRespostas: [] = dadosStorage.filter((resposta: IResposta) => resposta.pesquisaId == idPesquisa)
+          console.log(dadosRespostas);
 
-    if (data.formularioRespostas.length == 0) {
-      alertaNaTela("Aviso", "Responda pelo menos um produto")
-    } else {
-      const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      };
+          const data: IRespostaPesquisa = {
+            codigoLoja: codigoLoja,
+            formularioCategoria: formularioCategoria,
+            formularioRespondido: true,
+            formularioRespostas: dadosRespostas,
+            pequisaId: idPesquisa,
+          }
 
-      fetch(url, options)
-        .then(response => response.text())
-        .then(data => {
-          console.log('Resposta do servidor:', data);
-          alertaNaTela("Aviso", data)
-        })
-        .catch(error => {
-          console.error('Erro na solicitação:', error);
+          if(data.formularioRespostas.length == 0){
+            alertaNaTela("Aviso", "Responda pelo menos um produto")
+          } else {
+            const options = {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+            };
 
+            fetch(url, options)
+              .then(response => response.text())
+              .then(data => {
+                console.log('Resposta do servidor:', data);
+                alertaNaTela("Aviso", data)
+              })
+              .catch(error => {
+                console.error('Erro na solicitação:', error);
+              }
+              );
+          }
         }
-        );
-
-    }
-
-
+      },
+    ]);
   }
 
   function CapturarIdResposta(id: string) {
@@ -115,7 +122,7 @@ export default function PesquisaVerMais({ route }: ScreenProps2) {
   return (
     <View style={styles.container}>
       <Header text="Detalhes da pesquisa" />
-      <Card item={prazo} />
+      <Card item={prazo} status={status} pesquisaId={pesquisaId} />
       <View style={styles.cardFundoBranco}>
         <FlatList
           data={produtos}

@@ -1,27 +1,27 @@
 import moment from 'moment';
 import React, { useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { AuthContext } from '../../context/auth';
+import { View, Text, StyleSheet } from 'react-native';
+import { AuthContext, IRespostaPesquisa } from '../../context/auth';
 
-
-const Card = ({ item }) => {
-
+const Card = ({ item, status, pesquisaId }) => {
+    const {respostasPesquisas }: any = useContext(AuthContext);
     const { myLoja }: any = useContext(AuthContext);
-    const { VisivilidadeHistorico, setVisivilidadeHistorico } = useContext(AuthContext);
+
+    const idRespostasTrue = respostasPesquisas.map((resposta: IRespostaPesquisa) => resposta.pequisaId)
 
     return (
         <View style={styles.container}>
             <View style={styles.card}>
                 <View>
-                    <Text style={styles.texto}>Status : </Text>
+                {idRespostasTrue.includes(pesquisaId) === true ?
+                            <Text style={styles.texto}>Status : <Text style={{ color: "green" }}>Conluida</Text></Text>
+                            :
+                            status === true ? <Text style={styles.texto}>Status : <Text style={{ color: "#FFC700" }}>Em andamento</Text></Text> :
+                            <Text style={styles.texto}>Status : <Text style={{ color: "#ED1C24" }}>Nova</Text></Text>
+                        }
                     <Text style={styles.texto}>Loja : {myLoja.nomeFilial}</Text>
                     <Text style={styles.texto}>Prazo : {moment(item).format('DD/MM/YYYY')}</Text>
                 </View>
-
-                <View style={{display: 'flex', justifyContent: 'center', marginLeft: 35}}>
-                   
-                </View>
-
             </View>
 
         </View>

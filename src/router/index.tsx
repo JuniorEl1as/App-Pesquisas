@@ -14,6 +14,7 @@ export interface IProdutos {
   prazo: string;
   id: string;
   pesquisaId: string;
+  status: boolean;
 }
 
 export interface IPrazo {
