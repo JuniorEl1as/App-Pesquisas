@@ -7,6 +7,7 @@ import Menu from '../../components/menuBottom';
 import { IPesquisa, IProdutos } from '../../router';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { CardPesquisas } from '../../components/cardPesquisas';
+import Loading from '../../components/loading';
 
 type StackParams = {
     Pesquisas: undefined,
@@ -55,10 +56,10 @@ export default function Pesquisas({ navigation }: ScreenProps) {
                     </Picker>
                     <ScrollView style={{maxHeight: 500, height: 500}}>
 
-                        {
+                        {                           
                             pesquisaLojaFilter.map( (pesquisa : IPesquisa ) => {
                                 return <CardPesquisas key={pesquisa.id} navigation={navigation} render={pesquisa}/>
-                            })
+                            }) 
                         }
 
                     </ScrollView> 

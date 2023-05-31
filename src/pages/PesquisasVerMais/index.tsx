@@ -30,19 +30,19 @@ type RouteProps = RouteProp<StackParams, "PesquisaVerMais">
 type ScreenProps2 = {
   navigation: NavigationProps2,
   route: RouteProps,
-  status: boolean,
+  statusSave: string,
 }
 
 interface IRespostaPesquisa {
   codigoLoja: string,
-  formularioCategoria: string,
+  CategoriaFormulario : string,
   formularioRespondido: true,
   formularioRespostas: [],
   pequisaId: string,
 }
 
 export default function PesquisaVerMais({ route }: ScreenProps2) {
-  const { produtos, prazo, pesquisaId, id, status } = route.params
+  const { produtos, prazo, pesquisaId, id, statusSave, status } = route.params
   const { visibilidadeModal, setVisibilidadeModal, setProdutoIdparaHistorico }: any = useContext(AuthContext);
   const { setNomeProduto, setPesquisaID, pesquisaID, produtoCategoria }: any = useContext(AuthContext);
   const { setProdutoID, setProdutoCategoria, dadosStorage }: any = useContext(AuthContext);
@@ -77,11 +77,11 @@ export default function PesquisaVerMais({ route }: ScreenProps2) {
       {
         text: 'Confirmar', onPress: () => {
           const dadosRespostas: [] = dadosStorage.filter((resposta: IResposta) => resposta.pesquisaId == idPesquisa)
-          console.log(dadosRespostas);
+         
 
           const data: IRespostaPesquisa = {
             codigoLoja: codigoLoja,
-            formularioCategoria: formularioCategoria,
+            CategoriaFormulario : formularioCategoria,
             formularioRespondido: true,
             formularioRespostas: dadosRespostas,
             pequisaId: idPesquisa,
@@ -108,6 +108,7 @@ export default function PesquisaVerMais({ route }: ScreenProps2) {
                 console.error('Erro na solicitação:', error);
               }
               );
+              console.log(data);
           }
         }
       },
@@ -122,7 +123,7 @@ export default function PesquisaVerMais({ route }: ScreenProps2) {
   return (
     <View style={styles.container}>
       <Header text="Detalhes da pesquisa" />
-      <Card item={prazo} status={status} pesquisaId={pesquisaId} />
+      <Card item={prazo} statusSave={statusSave} pesquisaId={pesquisaId} status={status} />
       <View style={styles.cardFundoBranco}>
         <FlatList
           data={produtos}

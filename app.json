@@ -1,5 +1,18 @@
 {
   "expo": {
+    "permissions": [
+      "MEDIA_LIBRARY"
+    ],
+    "plugins": [
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
+          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ]
+    ],
     "name": "PesquisaApp",
     "slug": "PesquisaApp",
     "version": "1.0.0",

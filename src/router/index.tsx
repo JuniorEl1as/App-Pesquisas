@@ -14,6 +14,7 @@ export interface IProdutos {
   prazo: string;
   id: string;
   pesquisaId: string;
+  statusSave: string;
   status: boolean;
 }
 
@@ -26,6 +27,7 @@ export interface IPesquisaID {
 }
 
 export interface IPesquisa {
+  titulo: string,
   id: string,
   lojas: number,
   dateIni: string,

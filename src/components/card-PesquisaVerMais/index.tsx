@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { AuthContext, IRespostaPesquisa } from '../../context/auth';
 
-const Card = ({ item, status, pesquisaId }) => {
+const Card = ({ item, statusSave, pesquisaId, status }) => {
     const {respostasPesquisas }: any = useContext(AuthContext);
     const { myLoja }: any = useContext(AuthContext);
 
@@ -16,7 +16,7 @@ const Card = ({ item, status, pesquisaId }) => {
                 {idRespostasTrue.includes(pesquisaId) === true ?
                             <Text style={styles.texto}>Status : <Text style={{ color: "green" }}>Conluida</Text></Text>
                             :
-                            status === true ? <Text style={styles.texto}>Status : <Text style={{ color: "#FFC700" }}>Em andamento</Text></Text> :
+                            statusSave || status ? <Text style={styles.texto}>Status : <Text style={{ color: "#FFC700" }}>Em andamento</Text></Text> :
                             <Text style={styles.texto}>Status : <Text style={{ color: "#ED1C24" }}>Nova</Text></Text>
                         }
                     <Text style={styles.texto}>Loja : {myLoja.nomeFilial}</Text>
